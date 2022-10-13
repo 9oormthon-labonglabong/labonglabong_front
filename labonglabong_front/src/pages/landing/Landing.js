@@ -4,34 +4,31 @@ import styled from "styled-components";
 
 import theme from "../../context/themeContext";
 
-import labong from "../../assets/labong.png";
+// import labong from "../../assets/labong.png";
+
+import Lottie from "lottie-react";
+
+import labong from "../../assets/labong_lottie.json";
 
 const Landing = () => {
   return (
     <Layout>
-      <Content>
-        <ImageWrapper>
-          <Image src={labong} alt={"라봉이"} />
-        </ImageWrapper>
-        <div style={{ marginTop: "40px" }}>나의 제주 여행 일기</div>
-        <Title>아이라봉</Title>
-        <SubContent>나의 이름을 알려주라봉</SubContent>
-        <CustomInputWrapper>
-          <div
-            style={{
-              width: "100px",
-              height: "25px",
-              padding: "0 15px",
-              borderBottom: "3px solid #f99239",
-            }}
-          >
-            <input placeholder={"테스트"} style={{ width: "50px" }} />
-          </div>
-          {/* <CustomInput /> */}
-          라봉
-        </CustomInputWrapper>
-      </Content>
-      <Button>라봉이 심으러 갈라봉?</Button>
+      <ImageWrapper>
+        <Lottie animationData={labong} />
+      </ImageWrapper>
+      <ClearFix>
+        <Content>
+          <div style={{ marginTop: "50px" }}>나의 제주 여행 일기</div>
+          <Title>아이라봉</Title>
+          <SubContent>이름을 알려주라봉</SubContent>
+          <CustomInputWrapper>
+            <BotoomLine/>
+            <CustomInput type="text" maxLength="10" placeholder={"Ex) 카카"} />
+            <Date>라봉</Date>
+          </CustomInputWrapper>
+        </Content>
+        <Button onClick={{}}>라봉이 심으러 갈라봉?</Button>
+      </ClearFix>
     </Layout>
   );
 };
@@ -43,12 +40,16 @@ const Layout = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
   padding: 58px 16px 58px 16px;
+`;
+
+const ClearFix = styled.div`
+  height: 100%;
 `;
 
 const ImageWrapper = styled.div`
   display: flex;
+  margin-top: 25px;
   align-items: center;
   justify-content: center;
   width: 210px;
@@ -63,7 +64,6 @@ const Image = styled.img`
 `;
 
 const Content = styled.div`
-  margin-top: 25px;
   text-align: center;
   font-family: JejuGothic;
   font-weight: 600;
@@ -79,23 +79,21 @@ const Title = styled.div`
 const SubContent = styled.div`
   margin-top: 55px;
   text-align: center;
-  font-weight: 600;
+  font-weight: 700;
 `;
 
 const CustomInputWrapper = styled.div`
   margin-top: 20px;
   padding: 20px 26px;
-  display: flex;
+  // display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #f99239;
-  border-radius: 8px;
 `;
 
 const CustomInput = styled.input`
-  &:focus {
-    border: none;
-  }
+  margin: 0 3px;
+  padding: 15px;
+  margin-left: -15px;
 `;
 
 const Button = styled.div`
@@ -108,4 +106,18 @@ const Button = styled.div`
   text-align: center;
   cursor: pointer;
   box-shadow: "0px 4px 10px rgba(0, 0, 0, 0.2)";
+  margin-top: 150px;
+`;
+
+const Date = styled.span`
+  margin-left: -45px;
+`;
+
+const BotoomLine = styled.div`
+  width: "170px";
+  height: "3px";
+  padding: "0 15px";
+  borderbottom: "3px solid #f99239";
+  position: "absolute";
+  top: "600px";
 `;
