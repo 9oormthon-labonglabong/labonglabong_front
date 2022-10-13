@@ -110,7 +110,7 @@ function Map_sdk() {
                 {info && info.content === marker.content && (
                   <Container>
                     <Info>{marker.content}</Info>
-                    <Button><a href=""> 일기 쓰기 </a></Button>
+                    <Button><a href="" style={{ textDecoration: "none", color: "white"}}> 일기 쓰기 </a></Button>
                   </Container>
                 )}
               </div>
