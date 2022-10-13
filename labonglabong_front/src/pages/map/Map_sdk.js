@@ -201,6 +201,7 @@ const Layout = styled.section`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  font-family: JejuGothic;
 `;
 
 const Header = styled.section`

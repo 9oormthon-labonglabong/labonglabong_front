@@ -1,16 +1,34 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 import styled from "styled-components";
 
 import theme from "../../context/themeContext";
 
-// import labong from "../../assets/labong.png";
+import { useNavigate } from "react-router-dom";
 
 import Lottie from "lottie-react";
 
 import labong from "../../assets/labong_lottie.json";
 
+import { useNicknameRegistMutation } from "../../features/nickname/nickname.queries";
+
 const Landing = () => {
+
+  const navigate = useNavigate();
+
+  const [InputText, setInputText] = useState("");
+
+  const { mutateAsync } = useNicknameRegistMutation({ data: InputText });
+
+  const onChange = (e) => {
+    setInputText(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    navigate('/main')
+  };
+
   return (
     <Layout>
       <ImageWrapper>
@@ -23,11 +41,11 @@ const Landing = () => {
           <SubContent>이름을 알려주라봉</SubContent>
           <CustomInputWrapper>
             <BotoomLine/>
-            <CustomInput type="text" maxLength="10" placeholder={"Ex) 카카"} />
+            <CustomInput type="text" maxLength="10" placeholder={"Ex) 카카"} onChange={onChange}  />
             <Date>라봉</Date>
           </CustomInputWrapper>
         </Content>
-        <Button onClick={{}}>라봉이 심으러 갈라봉?</Button>
+        <Button type="submit" onClick={handleSubmit}>라봉이 심으러 갈라봉?</Button>
       </ClearFix>
     </Layout>
   );
