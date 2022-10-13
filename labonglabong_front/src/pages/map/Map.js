@@ -15,6 +15,7 @@ function Map() {
     setInputText('')
   }
 
+  
   return (
     <>
       <form className="inputForm" onSubmit={handleSubmit}>
