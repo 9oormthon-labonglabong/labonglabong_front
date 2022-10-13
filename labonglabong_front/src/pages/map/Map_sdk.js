@@ -4,6 +4,11 @@ import styled from "styled-components";
 import labong_add from "../../assets/labong_add.svg";
 import goback from "../../assets/goback.svg";
 
+import { useNavigate } from "react-router-dom";
+
+import { useRecoilState } from "recoil";
+import { diaryAtom } from "../../atoms/diaryAtom";
+
 const { kakao } = window;
 
 function Map_sdk() {
@@ -13,6 +18,10 @@ function Map_sdk() {
 
   const [InputText, setInputText] = useState("");
   const [Place, setPlace] = useState("");
+
+  const [diaryState, setDiaryState] = useRecoilState(diaryAtom);
+
+  const navigate = useNavigate();
 
   const onChange = (e) => {
     setInputText(e.target.value);
@@ -58,8 +67,8 @@ function Map_sdk() {
     <Layout>
       <Header>
         <div>
-          <a href={'/main'}>
-          <img src={goback} style={{ height: "16px" }} />
+          <a href={"/main"}>
+            <img src={goback} style={{ height: "16px" }} />
           </a>
         </div>
         <div>
@@ -112,7 +121,24 @@ function Map_sdk() {
                 {info && info.content === marker.content && (
                   <Container>
                     <Info>{marker.content}</Info>
-                    <Button><a href="" style={{ textDecoration: "none", color: "white"}}> 일기 쓰기 </a></Button>
+                    <Button>
+                      <a
+                        onClick={
+                          () =>
+                            setDiaryState({
+                              ...diaryState,
+                              latitude: marker.position.lat,
+                              longitude: marker.position.lng,
+                              address: marker.content,
+                            }, 
+                            navigate('/diary')
+                            )
+                        }
+                        style={{ textDecoration: "none", color: "white" }}
+                      >
+                        일기 쓰기
+                      </a>
+                    </Button>
                   </Container>
                 )}
               </div>
