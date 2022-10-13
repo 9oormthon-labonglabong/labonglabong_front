@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import Landing from "./pages/landing/Landing";
 import Main from "./pages/main/Main";
 import Diary from "./pages/diary/Diary";
-import Map from "./pages/map/Map";
+import Map from "./pages/map/Map_sdk";
 
 function App() {
   return (
