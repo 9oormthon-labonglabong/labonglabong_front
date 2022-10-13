@@ -4,6 +4,7 @@ import Landing from "./pages/landing/Landing";
 import Calendar from "./components/Calendar";
 import Map from "./components/Map";
 import MapContainer from "./pages/map/MapContainer";
+import SearchPlace from "./components/SearchPlace";
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/calendar" element={<Calendar />} />
       <Route path="/map" element={<MapContainer />} />
+      <Route path="/search" element={<SearchPlace />} />
     </Routes>
   );
 }
