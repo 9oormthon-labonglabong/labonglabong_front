@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import labong_default from '../assets/labong_default.png'
 
 const { kakao } = window
 
@@ -16,6 +17,12 @@ const MapContainer = ({ searchPlace }) => {
       level: 3,
     }
     const map = new kakao.maps.Map(container, options)
+
+    let imageSrc = {labong_default}, // 마커이미지의 주소입니다    
+    imageSize = new kakao.maps.Size(64, 69), // 마커이미지의 크기입니다
+    imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+    let markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption)
 
     const ps = new kakao.maps.services.Places()
 
@@ -72,6 +79,7 @@ const MapContainer = ({ searchPlace }) => {
       let marker = new kakao.maps.Marker({
         map: map,
         position: new kakao.maps.LatLng(place.y, place.x),
+        image: markerImage
       })
 
       kakao.maps.event.addListener(marker, 'click', function () {

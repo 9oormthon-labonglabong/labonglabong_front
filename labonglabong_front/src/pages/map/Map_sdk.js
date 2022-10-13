@@ -1,0 +1,137 @@
+import React, { useState, useEffect } from "react";
+import { Map, MapMarker, CustomOverlayMap } from "react-kakao-maps-sdk";
+import styled from "styled-components";
+import labong_default from "../../assets/labong_default.png";
+const { kakao } = window;
+
+function Map_sdk() {
+  const [info, setInfo] = useState();
+  const [markers, setMarkers] = useState([]);
+  const [map, setMap] = useState();
+
+  const [InputText, setInputText] = useState("");
+  const [Place, setPlace] = useState("");
+
+  const onChange = (e) => {
+    setInputText(e.target.value);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setPlace(InputText);
+  };
+
+  useEffect(() => {
+    if (!map) return;
+    const ps = new kakao.maps.services.Places();
+
+    ps.keywordSearch(InputText, (data, status, _pagination) => {
+      if (status === kakao.maps.services.Status.OK) {
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
+        // LatLngBounds 객체에 좌표를 추가합니다
+        const bounds = new kakao.maps.LatLngBounds();
+        let markers = [];
+
+        for (var i = 0; i < data.length; i++) {
+          // @ts-ignore
+          markers.push({
+            position: {
+              lat: data[i].y,
+              lng: data[i].x,
+            },
+            content: data[i].place_name,
+          });
+          // @ts-ignore
+          bounds.extend(new kakao.maps.LatLng(data[i].y, data[i].x));
+        }
+        setMarkers(markers);
+
+        // 검색된 장소 위치를 기준으로 지도 범위를 재설정합니다
+        map.setBounds(bounds);
+      }
+    });
+  }, [map, InputText]);
+
+  return (
+    <>
+      <form className="inputForm" onSubmit={handleSubmit}>
+        <input
+          placeholder="검색어를 입력하세요"
+          onChange={onChange}
+          value={InputText}
+        />
+        <button type="submit">검색</button>
+      </form>
+      <Map // 로드뷰를 표시할 Container
+        center={{
+          lat: 37.566826,
+          lng: 126.9786567,
+        }}
+        style={{
+          width: "100%",
+          height: "350px",
+        }}
+        level={3}
+        onCreate={setMap}
+      >
+        {markers.map((marker) => (
+          <>
+            <MapMarker
+              key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
+              position={marker.position}
+              image={{
+                src: labong_default,
+                size: {
+                  width: 30,
+                  height: 30,
+                },
+              }}
+              onClick={() => setInfo(marker)}
+            />
+
+            <CustomOverlayMap position={marker.position}>
+              <div className="label" style={{ color: "#000" }}>
+                <Info>{marker.content}</Info>
+                {info && info.content === marker.content && (
+                  <Button>선택</Button>
+                )}
+              </div>
+            </CustomOverlayMap>
+          </>
+        ))}
+      </Map>
+    </>
+  );
+}
+
+export default Map_sdk;
+
+const Button = styled.div`
+  padding: 16px;
+  border-radius: 12px;
+  background-color: #f99239;
+  color: white;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+`;
+
+const Info = styled.span`
+  padding: 2px;
+  margin-top: 30px;
+  border-radius: 12px;
+  background-color: white;
+  font-weight: 400;
+  text-align: center;
+  width: 500px;
+`;
+
+const Container = styled.div`
+  padding: 2px;
+  border-radius: 12px;
+  background-color: white;
+  font-weight: 400;
+  text-align: center;
+  width: 100px;
+  margin-top: 100px;
+`;
