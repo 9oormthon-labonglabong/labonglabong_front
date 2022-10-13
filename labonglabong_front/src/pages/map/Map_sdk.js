@@ -58,7 +58,9 @@ function Map_sdk() {
     <Layout>
       <Header>
         <div>
+          <a href={'/main'}>
           <img src={goback} style={{ height: "16px" }} />
+          </a>
         </div>
         <div>
           <Date>장소 탐색</Date>
