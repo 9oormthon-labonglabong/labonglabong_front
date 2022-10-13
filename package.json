@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@goorm-dev/gds-goormthon": "^0.0.6",
-    "reactstrap": "^9.1.4"
-  }
-}
