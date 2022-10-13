@@ -1,15 +1,39 @@
 import { useQuery } from "react-query";
 
-import { requestGetRegisteredDayAPI } from "./calendarApi";
+import {
+  requestGetRegisteredDiaryAPI,
+  requestGetRegisteredDayAPI,
+} from "./calendarApi";
 
-const useRegisteredDay = ({ date, nickname }) => {
+import dayjs from "dayjs";
+
+const useRegisteredDiary = ({ date, nickname }) => {
   return useQuery(
-    ["registered_day", date, nickname],
-    () => requestGetRegisteredDayAPI({ date, nickname }),
+    ["registered_diary", date, nickname],
+    () =>
+      requestGetRegisteredDiaryAPI({
+        date: dayjs(date).format("YYYY-MM-DD"),
+        nickname,
+      }),
     {
-      staleTime: 1000 * 20,
+      enabled: false,
+      staleTime: 1000 * 30,
     }
   );
 };
 
-export { useRegisteredDay };
+const useRegisteredDay = ({ date, nickname }) => {
+  return useQuery(
+    ["registered_day", date, nickname],
+    () =>
+      requestGetRegisteredDayAPI({
+        date: dayjs(date).format("YYYY-MM-DD"),
+        nickname,
+      }),
+    {
+      staleTime: 1000 * 30,
+    }
+  );
+};
+
+export { useRegisteredDiary, useRegisteredDay };

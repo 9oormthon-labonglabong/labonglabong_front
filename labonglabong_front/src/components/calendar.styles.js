@@ -10,7 +10,7 @@ export const Layout = styled.div`
 export const Title = styled.div``;
 
 export const ArrowWrapper = styled.div`
-  width: 200px;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -24,7 +24,6 @@ export const SpinnerWrapper = styled.div`
 `;
 
 export const Table = styled.table`
-  /* max-width: 400px; */
   height: 400px;
 `;
 
@@ -34,14 +33,14 @@ export const Thead = styled.thead`
 
 export const Th = styled.th`
   text-align: center;
-  padding: 20px;
+  padding: 15px;
 `;
 
 export const Td = styled.td`
   position: relative;
-  padding: 18px;
+  padding: 13px;
   opacity: ${({ isCurrentMonth }) => (isCurrentMonth ? 1 : 0.2)};
-  color: ${({ isCurrentDate }) => (isCurrentDate ? "red" : "black")};
+  color: ${({ isCurrentDate }) => (isCurrentDate ? "#FFAC35" : "black")};
   text-align: center;
 `;
 
@@ -51,6 +50,7 @@ export const Round = styled.div`
   border-radius: 4.5px;
   background-color: #f99239;
   position: absolute;
-  bottom: 5px;
-  left: 23px;
+  // row props에 따라 bottom, left를 다르게 표현해준다.
+  bottom: ${({ row }) => (row === 6 ? "13px" : "23px")};
+  left: ${({ row }) => (row === 6 ? "17.5px" : "18px")};
 `;

@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
+import "antd/dist/antd.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
@@ -8,6 +9,8 @@ import { BrowserRouter } from "react-router-dom";
 import GlobalStyles from "./GlobalStyles";
 
 import { QueryClientProvider, QueryClient } from "react-query";
+
+import { RecoilRoot } from "recoil";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,12 +23,14 @@ const queryClient = new QueryClient({
 });
 
 ReactDOM.render(
-  <QueryClientProvider client={queryClient}>
-    <BrowserRouter>
-      <GlobalStyles />
-      <App />
-    </BrowserRouter>
-  </QueryClientProvider>,
+  <RecoilRoot>
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <GlobalStyles />
+        <App />
+      </BrowserRouter>
+    </QueryClientProvider>
+  </RecoilRoot>,
   document.getElementById("root")
 );
 

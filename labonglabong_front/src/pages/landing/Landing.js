@@ -1,16 +1,37 @@
 import React from "react";
 
-import { Input } from "reactstrap";
+import styled from "styled-components";
+
+import theme from "../../context/themeContext";
 
 import labong from "../../assets/labong.png";
-import styled from "styled-components";
 
 const Landing = () => {
   return (
     <Layout>
-      <Image src={labong} alt={"라봉이"} />
-      <Content>나의 라봉이 이름을 지어주세요</Content>
-      <CustomInput placeholder={"나의 라봉이는?"} />
+      <Content>
+        <ImageWrapper>
+          <Image src={labong} alt={"라봉이"} />
+        </ImageWrapper>
+        <div style={{ marginTop: "40px" }}>나의 제주 여행 일기</div>
+        <Title>아이라봉</Title>
+        <SubContent>나의 이름을 알려주라봉</SubContent>
+        <CustomInputWrapper>
+          <div
+            style={{
+              width: "100px",
+              height: "25px",
+              padding: "0 15px",
+              borderBottom: "3px solid #f99239",
+            }}
+          >
+            <input placeholder={"테스트"} style={{ width: "50px" }} />
+          </div>
+          {/* <CustomInput /> */}
+          라봉
+        </CustomInputWrapper>
+      </Content>
+      <Button>라봉이 심으러 갈라봉?</Button>
     </Layout>
   );
 };
@@ -18,25 +39,73 @@ const Landing = () => {
 export default Landing;
 
 const Layout = styled.section`
-  height: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: space-between;
+  padding: 58px 16px 58px 16px;
+`;
+
+const ImageWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 210px;
+  height: 210px;
+  border-radius: 105px;
+  background-color: ${theme.color.PRIMARY};
 `;
 
 const Image = styled.img`
-  width: 200px;
-  height: 250px;
+  width: 131px;
+  height: 165px;
 `;
 
 const Content = styled.div`
   margin-top: 25px;
-  font-size: 24px;
-  font-weight: 700;
+  text-align: center;
+  font-family: JejuGothic;
+  font-weight: 600;
 `;
 
-const CustomInput = styled(Input)`
-  width: 300px;
+const Title = styled.div`
+  margin-top: 15px;
+  font-size: 40px;
+  line-height: 36px;
+  font-weight: 600;
+`;
+
+const SubContent = styled.div`
+  margin-top: 55px;
+  text-align: center;
+  font-weight: 600;
+`;
+
+const CustomInputWrapper = styled.div`
   margin-top: 20px;
+  padding: 20px 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #f99239;
+  border-radius: 8px;
+`;
+
+const CustomInput = styled.input`
+  &:focus {
+    border: none;
+  }
+`;
+
+const Button = styled.div`
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: #f99239;
+  color: white;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: "0px 4px 10px rgba(0, 0, 0, 0.2)";
 `;

@@ -83,7 +83,7 @@ const GlobalStyles = createGlobalStyle`
     appearance: none;
   }
 
-  button {F
+  button {
     background-color: transparent;
     cursor: pointer;
     outline: none;

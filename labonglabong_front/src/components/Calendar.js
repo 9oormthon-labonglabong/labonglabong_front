@@ -14,8 +14,8 @@ import {
 
 import { useRegisteredDay } from "../features/calendar/calendar.queries";
 
-// onClick할 경우의 event를 주입받는 방식으로 진행한다.
 const Calendar = ({ onClick }) => {
+  // recoil state를 바라봐야함
   const [selectedMonth, setSelectedMonth] = useState(
     format(new Date(), "yyyy-MM")
   );
@@ -33,14 +33,20 @@ const Calendar = ({ onClick }) => {
   return (
     <S.Layout>
       <S.ArrowWrapper>
-        <ChevronLeftIcon onClick={navigation.toPrev} />
+        <ChevronLeftIcon
+          style={{ width: "25px", height: "25px" }}
+          onClick={navigation.toPrev}
+        />
         <S.Title>{format(cursorDate, "yyyy. MM")}</S.Title>
-        <ChevronRightIcon onClick={navigation.toNext} />
+        <ChevronRightIcon
+          style={{ width: "25px", height: "25px" }}
+          onClick={navigation.toNext}
+        />
       </S.ArrowWrapper>
 
       {isFetching ? (
         <S.SpinnerWrapper>
-          <Spinner />
+          <Spinner color={"warning"} />
         </S.SpinnerWrapper>
       ) : (
         <S.Table>
@@ -66,10 +72,9 @@ const Calendar = ({ onClick }) => {
                         onClick={() => onClick(format(value, "yyyy-MM-dd"))}
                       >
                         {getDate(value)}
-                        {/* 현재 search한 month와 동일하고 response로 받아온 days중 있다면 Round를 보여준다. */}
                         {format(value, "yyyy-MM") === selectedMonth &&
                           RegisteredDays?.days?.includes(getDate(value)) && (
-                            <S.Round />
+                            <S.Round row={body?.value?.length} />
                           )}
                       </S.Td>
                     </>

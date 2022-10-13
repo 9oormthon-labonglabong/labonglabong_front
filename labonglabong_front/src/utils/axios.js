@@ -18,3 +18,18 @@ export const getAPI = async ({ url, params }) => {
     throw error;
   }
 };
+
+export const postAPI = async ({ url, params, data }) => {
+  try {
+    const response = await defaultClient({
+      method: "post",
+      url,
+      params,
+      data,
+    });
+    return response.data;
+  } catch (error) {
+    console.log("error", error);
+    throw error;
+  }
+};
