@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Map, MapMarker } from "react-kakao-maps-sdk";
+import { Map, MapMarker, CustomOverlayMap } from "react-kakao-maps-sdk";
+import styled from "styled-components";
+import labong_default from "../../assets/labong_default.png";
 const { kakao } = window;
 
 function Map_sdk() {
@@ -73,15 +75,29 @@ function Map_sdk() {
         onCreate={setMap}
       >
         {markers.map((marker) => (
-          <MapMarker
-            key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
-            position={marker.position}
-            onClick={() => setInfo(marker)}
-          >
-            {info && info.content === marker.content && (
-              <div style={{ color: "#000" }}>{marker.content}</div>
-            )}
-          </MapMarker>
+          <>
+            <MapMarker
+              key={`marker-${marker.content}-${marker.position.lat},${marker.position.lng}`}
+              position={marker.position}
+              image={{
+                src: labong_default,
+                size: {
+                  width: 30,
+                  height: 30,
+                },
+              }}
+              onClick={() => setInfo(marker)}
+            />
+
+            <CustomOverlayMap position={marker.position}>
+              <div className="label" style={{ color: "#000" }}>
+                <Info>{marker.content}</Info>
+                {info && info.content === marker.content && (
+                  <Button>선택</Button>
+                )}
+              </div>
+            </CustomOverlayMap>
+          </>
         ))}
       </Map>
     </>
@@ -89,3 +105,33 @@ function Map_sdk() {
 }
 
 export default Map_sdk;
+
+const Button = styled.div`
+  padding: 16px;
+  border-radius: 12px;
+  background-color: #f99239;
+  color: white;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+`;
+
+const Info = styled.span`
+  padding: 2px;
+  margin-top: 30px;
+  border-radius: 12px;
+  background-color: white;
+  font-weight: 400;
+  text-align: center;
+  width: 500px;
+`;
+
+const Container = styled.div`
+  padding: 2px;
+  border-radius: 12px;
+  background-color: white;
+  font-weight: 400;
+  text-align: center;
+  width: 100px;
+  margin-top: 100px;
+`;
