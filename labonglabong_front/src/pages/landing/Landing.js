@@ -1,27 +1,42 @@
-import React, { useState } from "react";
+import React from "react";
 
-import Calendar from "../../components/Calendar";
+import { Input } from "reactstrap";
 
-import { Modal, ModalBody } from "reactstrap";
+import labong from "../../assets/labong.png";
+import styled from "styled-components";
 
 const Landing = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const handleToggle = () => {
-    setModalVisible(!modalVisible);
-  };
-
   return (
-    <>
-      <div onClick={handleToggle}>랜딩페이지</div>
-
-      <Modal isOpen={modalVisible} toggle={handleToggle}>
-        <ModalBody>
-          <Calendar />
-        </ModalBody>
-      </Modal>
-    </>
+    <Layout>
+      <Image src={labong} alt={"라봉이"} />
+      <Content>나의 라봉이 이름을 지어주세요</Content>
+      <CustomInput placeholder={"나의 라봉이는?"} />
+    </Layout>
   );
 };
 
 export default Landing;
+
+const Layout = styled.section`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Image = styled.img`
+  width: 200px;
+  height: 250px;
+`;
+
+const Content = styled.div`
+  margin-top: 25px;
+  font-size: 24px;
+  font-weight: 700;
+`;
+
+const CustomInput = styled(Input)`
+  width: 300px;
+  margin-top: 20px;
+`;

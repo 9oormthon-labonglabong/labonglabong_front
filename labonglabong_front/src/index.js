@@ -7,13 +7,25 @@ import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import GlobalStyles from "./GlobalStyles";
 
+import { QueryClientProvider, QueryClient } from "react-query";
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60000,
+      refetchOnWindowFocus: true,
+      retry: false,
+    },
+  },
+});
+
 ReactDOM.render(
-  <React.StrictMode>
+  <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <GlobalStyles />
       <App />
     </BrowserRouter>
-  </React.StrictMode>,
+  </QueryClientProvider>,
   document.getElementById("root")
 );
 
