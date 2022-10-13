@@ -2,17 +2,15 @@ import { Route, Routes } from "react-router-dom";
 
 import Landing from "./pages/landing/Landing";
 import Calendar from "./components/Calendar";
-import Map from "./components/Map";
-import MapContainer from "./pages/map/MapContainer";
-import SearchPlace from "./components/SearchPlace";
+import Map from "./pages/map/Map";
+
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
       <Route path="/calendar" element={<Calendar />} />
-      <Route path="/map" element={<MapContainer />} />
-      <Route path="/search" element={<SearchPlace />} />
+      <Route path="/map" element={<Map />} />
     </Routes>
   );
 }
