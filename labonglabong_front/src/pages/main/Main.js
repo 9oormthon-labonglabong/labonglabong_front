@@ -8,24 +8,28 @@ import Calendar from "../../components/Calendar";
 import { Modal, ModalBody } from "reactstrap";
 import { Map, MapMarker, CustomOverlayMap } from "react-kakao-maps-sdk";
 
+import { useRegisteredDiaryData } from "../../features/diary/diary.queries";
 import { useRegisteredMarker } from "../../features/map/map.queries";
-
 import { useRegisteredDiary } from "../../features/calendar/calendar.queries";
 
-import labong from "../../assets/labong.png";
 import labong_default from "../../assets/labong_default.png";
 
-import { ChevronDownIcon, Spinner } from "@goorm-dev/gds-goormthon";
+import { ChevronDownIcon } from "@goorm-dev/gds-goormthon";
 
 import { checkCommentSize, LABONG_ARRAY } from "../../utils/common";
 
 import { useRecoilState } from "recoil";
 import { calendarAtom } from "../../atoms/calendarAtom";
+import { diaryAtom } from "../../atoms/diaryAtom";
+
+import dayjs from "dayjs";
 
 const Main = () => {
+  const [selectedDiaryId, setSelectedDiaryId] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
 
   const [calendarState, setCalendarState] = useRecoilState(calendarAtom);
+  const [, setDiaryState] = useRecoilState(diaryAtom);
 
   const navigate = useNavigate();
 
@@ -37,11 +41,32 @@ const Main = () => {
     nickname: "aa",
     date: calendarState.selectedDate,
   });
+
+  const { data: registeredDiaryData, refetch: registeredDiaryDataRefetch } =
+    useRegisteredDiaryData({
+      diaryId: selectedDiaryId,
+    });
+
   const { data: registeredMarker } = useRegisteredMarker({ nickname: "aa" });
 
   useEffect(() => {
     refetch();
   }, [calendarState.selectedDate]);
+
+  useEffect(() => {
+    registeredDiaryDataRefetch();
+  }, [selectedDiaryId]);
+
+  useEffect(() => {
+    if (!!registeredDiaryData) {
+      setDiaryState({
+        ...registeredDiaryData,
+        emotion: registeredDiaryData.emotion - 1,
+      });
+
+      navigate("/diary?fixed=true");
+    }
+  }, [registeredDiaryData]);
 
   useEffect(() => {
     console.log("registeredMarker", registeredMarker);
@@ -69,7 +94,7 @@ const Main = () => {
             </Title>
           </div>
           <DatePickerTrigger onClick={handleToggle}>
-            {calendarState?.selectedDate}
+            {dayjs(calendarState?.selectedDate).format("YYYY.MM.DD")}
             <ChevronDownIcon />
           </DatePickerTrigger>
         </Header>
@@ -91,36 +116,46 @@ const Main = () => {
           level={10}
         >
           {registeredDiarys?.map((data, index) => {
-            const { latitude, longitude, size, emotion } = data;
+            const { latitude, longitude, size, emotion, diaryId } = data;
             const { width, height } = checkCommentSize(size);
 
             return (
-              <>
-                <MapMarker
-                  key={`${longitude}-${index}`}
-                  position={{ lat: latitude, lng: longitude }}
-                  image={{
-                    src: LABONG_ARRAY[emotion - 1],
-                    size: {
-                      width,
-                      height,
-                    },
-                  }}
-                />
-                {/* <CustomOverlayMap
-                  position={{ lat: latitude, lng: longitude }}
-                  xAnchor={-2}
-                  yAnchor={5}
-                >
-                  <NumberTag>{index + 1}</NumberTag>
-                </CustomOverlayMap> */}
-              </>
+              <MapMarker
+                key={`${longitude}-${index}`}
+                onClick={() => {
+                  setSelectedDiaryId(diaryId);
+                }}
+                position={{ lat: latitude, lng: longitude }}
+                image={{
+                  src: LABONG_ARRAY[emotion - 1],
+                  size: {
+                    width,
+                    height,
+                  },
+                }}
+              />
             );
           })}
+
+          {/* {registeredDiarys?.map((data, index) => {
+            const { latitude, longitude } = data;
+
+            return (
+              <>
+                <CustomOverlayMap
+                  position={{ lat: latitude, lng: longitude }}
+                  xAnchor={-0.2}
+                  yAnchor={1.3}
+                >
+                  <NumberTag>{index + 1}</NumberTag>
+                </CustomOverlayMap>
+              </>
+            );
+          })} */}
         </Map>
         {/* )} */}
       </div>
-      <Button onClick={() => navigate("/diary")}>라봉이 심으러 갈라봉?</Button>
+      <Button onClick={() => navigate("/map")}>라봉이 심으러 갈라봉?</Button>
 
       <Modal isOpen={modalVisible} toggle={handleToggle} centered={true}>
         <ModalBody>

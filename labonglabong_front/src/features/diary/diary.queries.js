@@ -1,15 +1,33 @@
-import { useMutation } from "react-query";
+import { useQuery, useMutation } from "react-query";
 
-import { requestPostRegisterDiaryAPI } from "./diaryApi";
+import {
+  requestGetRegisteredDiaryDataAPI,
+  requestPostRegisterDiaryAPI,
+} from "./diaryApi";
 
-const useDiaryRegistMutation = ({ data }) => {
+const useRegisteredDiaryData = ({ diaryId }) => {
+  return useQuery(
+    ["registered_diary", diaryId],
+    () =>
+      requestGetRegisteredDiaryDataAPI({
+        diaryId,
+      }),
+    {
+      enabled: false,
+      staleTime: 1000 * 30,
+    }
+  );
+};
+
+const useDiaryRegistMutation = ({ data, options }) => {
   return useMutation(
     ["registered_marker", data],
     () => requestPostRegisterDiaryAPI({ data }),
     {
       staleTime: 1000 * 20,
+      ...options,
     }
   );
 };
 
-export { useDiaryRegistMutation };
+export { useRegisteredDiaryData, useDiaryRegistMutation };

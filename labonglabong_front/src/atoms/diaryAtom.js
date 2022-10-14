@@ -1,15 +1,26 @@
 import { atom } from "recoil";
 
+export const INITIAL_STATE = {
+  time: "00:00",
+  emotion: null,
+  text: "",
+  latitude: "",
+  longitude: "",
+  address: "",
+  title: "",
+  paths: "",
+};
+
 export const diaryAtom = atom({
   key: "diaryAtom",
   default: {
     time: "00:00",
     emotion: null,
     text: "",
-    date: "2022-10-14",
-    latitude: "33.43",
-    longitude: "126.87",
+    latitude: "",
+    longitude: "",
     address: "",
     title: "",
+    paths: "",
   },
 });

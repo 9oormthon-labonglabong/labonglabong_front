@@ -5,21 +5,22 @@ import { ChevronLeftIcon } from "@goorm-dev/gds-goormthon";
 
 import { useRecoilState } from "recoil";
 import { calendarAtom } from "../../atoms/calendarAtom";
-import { diaryAtom } from "../../atoms/diaryAtom";
+import { INITIAL_STATE, diaryAtom } from "../../atoms/diaryAtom";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 
+import { queryClient } from "../..";
 import { useDiaryRegistMutation } from "../../features/diary/diary.queries";
 
-import dayjs from "dayjs";
-
-import labong_smile from "../../assets/labong_smile.png";
-
 import { TimePicker } from "antd";
+import labong_smile from "../../assets/labong_smile.png";
+import labong_default from "../../assets/labong_default.png";
+
+import dayjs from "dayjs";
+import { parse } from "query-string";
 
 import { LABONG_ARRAY } from "../../utils/common";
 
-// props 혹은 query params로 체크하여 수정이 불가하게 분기처리한다.
 const Diary = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -29,9 +30,21 @@ const Diary = () => {
   const [diaryState, setDiaryState] = useRecoilState(diaryAtom);
 
   // modal visible
-  const { mutateAsync } = useDiaryRegistMutation({ data: formData });
+  const { mutateAsync } = useDiaryRegistMutation({
+    data: formData,
+    options: {
+      // 성공 시 지면 이동하고, query reset
+      onSuccess: () => {
+        queryClient.invalidateQueries();
+        console.log("good");
+        navigate("/main");
+      },
+    },
+  });
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const parsedData = parse(location.search);
 
   useEffect(() => {
     if (!!formData) {
@@ -51,12 +64,8 @@ const Diary = () => {
   const checkAllDataSelected = () => {
     const { time, emotion, text, title } = diaryState;
 
-    return !!time && !!emotion && !!text && !!title && !!selectedFile;
+    return !!time && emotion >= 0 && !!text && !!title && !!selectedFile;
   };
-
-  useEffect(() => {
-    console.log("test", checkAllDataSelected());
-  }, [checkAllDataSelected]);
 
   const handleSubmit = () => {
     const isAllDataSelected = checkAllDataSelected();
@@ -67,9 +76,12 @@ const Diary = () => {
 
     customFormData.append("imageFiles", selectedFile);
     customFormData.append("time", diaryState.time);
-    customFormData.append("emotion", diaryState.emotion);
+    customFormData.append("emotion", diaryState.emotion + 1);
     customFormData.append("text", diaryState.text);
-    customFormData.append("date", calendarState.selectedDate);
+    customFormData.append(
+      "date",
+      dayjs(calendarState.selectedDate).format("YYYY-MM-DD")
+    );
     customFormData.append("latitude", diaryState.latitude);
     customFormData.append("longitude", diaryState.longitude);
     customFormData.append("address", diaryState.address);
@@ -77,19 +89,42 @@ const Diary = () => {
     customFormData.append("nickname", "aa");
 
     setFormData(customFormData);
+    setDiaryState({
+      ...INITIAL_STATE,
+    });
   };
 
   return (
     <Layout>
       <ArrowWrapper>
         <ChevronLeftIcon
-          style={{ width: "20px", height: "20px" }}
-          onClick={() => navigate(-1)}
+          style={{
+            position: "absolute",
+            left: "16px",
+            width: "20px",
+            height: "20px",
+          }}
+          onClick={() => {
+            const { time, emotion, title, text } = INITIAL_STATE;
+            setDiaryState({
+              ...diaryState,
+              time,
+              emotion,
+              title,
+              text,
+            });
+            navigate(-1);
+          }}
         />
         <Title>{dayjs(calendarState?.selectedDate).format("YYYY.MM.DD")}</Title>
-        <SubmitButton disabled={checkAllDataSelected()} onClick={handleSubmit}>
-          등록
-        </SubmitButton>
+        {!parsedData?.fixed && (
+          <SubmitButton
+            disabled={checkAllDataSelected()}
+            onClick={handleSubmit}
+          >
+            등록
+          </SubmitButton>
+        )}
       </ArrowWrapper>
       <div>
         <DiarySection>
@@ -97,22 +132,26 @@ const Diary = () => {
             <LabelWrapper>
               <LabelTitle>장소</LabelTitle>
               <LabelContent>
-                <TextInput placeholder={"장소를 입력해주세요"} />
+                <BlockContent>{diaryState.address}</BlockContent>
               </LabelContent>
             </LabelWrapper>
             <LabelWrapper>
               <LabelTitle>시간</LabelTitle>
               <LabelContent>
-                <TimePicker
-                  placeholder={"00:00"}
-                  onChange={(value) =>
-                    setDiaryState({
-                      ...diaryState,
-                      time: dayjs(value).format("HH:mm"),
-                    })
-                  }
-                  format={"HH:mm"}
-                />
+                {!!parsedData?.fixed ? (
+                  <div>{diaryState.time}</div>
+                ) : (
+                  <TimePicker
+                    placeholder={"00:00"}
+                    onChange={(value) =>
+                      setDiaryState({
+                        ...diaryState,
+                        time: dayjs(value).format("HH:mm"),
+                      })
+                    }
+                    format={"HH:mm"}
+                  />
+                )}
               </LabelContent>
             </LabelWrapper>
           </LabelSection>
@@ -126,12 +165,13 @@ const Diary = () => {
                       <EmojiWrapper index={index} emotion={diaryState.emotion}>
                         <img
                           src={data}
-                          onClick={() =>
+                          onClick={() => {
+                            if (!!parsedData?.fixed) return;
                             setDiaryState({
                               ...diaryState,
                               emotion: index,
-                            })
-                          }
+                            });
+                          }}
                           style={{ width: "28px", height: "35px" }}
                         />
                       </EmojiWrapper>
@@ -141,22 +181,14 @@ const Diary = () => {
               </div>
             </LabelWrapper>
           </LabelSection>
-          <div
-            style={{
-              height: "250px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              borderBottom: "3px solid #858899",
-            }}
-          >
-            {selectedImage ? (
-              <MainImage src={selectedImage} />
+          <ImageWrapper>
+            {selectedImage || !!parsedData?.fixed ? (
+              <MainImage src={selectedImage ?? diaryState?.paths?.[0]} />
             ) : (
               <ImageUpload>
                 <label htmlFor="ex_file">
                   <div className="btnStart">
-                    <img src={labong_smile} alt="btnStart" />
+                    <img src={labong_default} alt="btnStart" />
                   </div>
                 </label>
                 <input
@@ -170,33 +202,41 @@ const Diary = () => {
                 />
               </ImageUpload>
             )}
-          </div>
+          </ImageWrapper>
           <LabelSection>
             <LabelWrapper>
               <LabelTitle>제목</LabelTitle>
               <LabelContent>
-                <TextInput
-                  onChange={(e) =>
-                    setDiaryState({
-                      ...diaryState,
-                      title: e.target.value,
-                    })
-                  }
-                  placeholder={"제목을 입력해주세요"}
-                />
+                {!!parsedData?.fixed ? (
+                  <div>{diaryState.title}</div>
+                ) : (
+                  <TextInput
+                    onChange={(e) =>
+                      setDiaryState({
+                        ...diaryState,
+                        title: e.target.value,
+                      })
+                    }
+                    placeholder={"제목을 입력해주세요"}
+                  />
+                )}
               </LabelContent>
             </LabelWrapper>
           </LabelSection>
           <ContentSection>
-            <TextInput
-              onChange={(e) =>
-                setDiaryState({
-                  ...diaryState,
-                  text: e.target.value,
-                })
-              }
-              placeholder={"추억을 담아 라봉이를 키워보라봉"}
-            />
+            {!!parsedData?.fixed ? (
+              <div style={{ padding: "10px" }}>{diaryState.text}</div>
+            ) : (
+              <PaddedTextInput
+                onChange={(e) =>
+                  setDiaryState({
+                    ...diaryState,
+                    text: e.target.value,
+                  })
+                }
+                placeholder={"추억을 담아 라봉이를 키워보라봉"}
+              />
+            )}
           </ContentSection>
         </DiarySection>
       </div>
@@ -213,13 +253,19 @@ const Layout = styled.div`
 `;
 
 const ArrowWrapper = styled.div`
-  margin: 20px;
+  position: relative;
+  margin: 20px 0;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 `;
 
 const Title = styled.div``;
+
+const BlockContent = styled.div`
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 1; /* 라인수 */
+`;
 
 const DiarySection = styled.section`
   height: calc(100vh - 60px);
@@ -281,6 +327,14 @@ const MainImage = styled.img`
   object-fit: cover;
 `;
 
+const ImageWrapper = styled.div`
+  height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 3px solid #858899;
+`;
+
 const ImageUpload = styled.div`
   margin: 0 8px 0 8px;
   img {
@@ -306,8 +360,9 @@ const ImageUpload = styled.div`
 `;
 
 const ContentSection = styled.section`
+  height: 300px;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 `;
 
 const TextInput = styled.input`
@@ -321,6 +376,21 @@ const TextInput = styled.input`
   }
 `;
 
+const PaddedTextInput = styled.textarea`
+  width: 100%;
+  height: 300px;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  text-overflow: ellipsis;
+
+  &:focus {
+    outline: none;
+  }
+`;
+
 const SubmitButton = styled.div`
+  position: absolute;
+  right: 16px;
   color: ${({ disabled }) => (disabled ? "#f99239" : "#A9ABB8")};
 `;

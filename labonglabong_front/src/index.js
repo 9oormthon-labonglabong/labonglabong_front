@@ -12,7 +12,7 @@ import { QueryClientProvider, QueryClient } from "react-query";
 
 import { RecoilRoot } from "recoil";
 
-const queryClient = new QueryClient({
+export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: 60000,

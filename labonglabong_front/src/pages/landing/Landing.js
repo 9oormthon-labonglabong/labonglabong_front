@@ -27,7 +27,6 @@ const Landing = () => {
           >
             <input placeholder={"테스트"} style={{ width: "50px" }} />
           </div>
-          {/* <CustomInput /> */}
           라봉
         </CustomInputWrapper>
       </Content>
