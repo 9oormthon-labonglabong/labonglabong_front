@@ -191,8 +191,8 @@ const Title = styled.div`
   margin-top: 15px;
   font-size: 40px;
   line-height: 36px;
-  font-weight: 600;
-  font-family: JejuGothic;
+  font-weight: 400;
+  font-family: "JejuGothic";
 `;
 
 const Image = styled.img`

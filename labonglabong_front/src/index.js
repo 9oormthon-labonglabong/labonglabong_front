@@ -1,7 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
-import "antd/dist/antd.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
@@ -11,6 +9,9 @@ import GlobalStyles from "./GlobalStyles";
 import { QueryClientProvider, QueryClient } from "react-query";
 
 import { RecoilRoot } from "recoil";
+
+import "./index.css";
+import "antd/dist/antd.css";
 
 export const queryClient = new QueryClient({
   defaultOptions: {

@@ -1,6 +1,18 @@
 import { createGlobalStyle } from "styled-components";
 
+import JejuGothic from "./static/fonts/JejuGothic-Regular.woff2";
+
 const GlobalStyles = createGlobalStyle`
+  @import url('https://www.jsdelivr.com/package/npm/@noonnu/jeju-gothic');
+
+  @font-face {
+    font-family: "JejuGothic";
+    font-style: normal;
+    font-display: fallback;
+    font-weight: 400;
+    src: url(${JejuGothic}) format("woff");
+  }
+
   html, body, div, span, applet, object, iframe,
   h1, h2, h3, h4, h5, h6, p, blockquote, pre,
   a, abbr, acronym, address, big, cite, code,
