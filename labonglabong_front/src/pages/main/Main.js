@@ -16,7 +16,11 @@ import labong_default from "../../assets/labong_default.png";
 
 import { ChevronDownIcon } from "@goorm-dev/gds-goormthon";
 
-import { checkCommentSize, LABONG_ARRAY } from "../../utils/common";
+import {
+  checkCommentSize,
+  checkLayoutSize,
+  LABONG_ARRAY,
+} from "../../utils/common";
 
 import { useRecoilState } from "recoil";
 import { calendarAtom } from "../../atoms/calendarAtom";
@@ -38,7 +42,7 @@ const Main = () => {
     refetch,
     isFetching,
   } = useRegisteredDiary({
-    nickname: "aa",
+    nickname: calendarState.nickname,
     date: calendarState.selectedDate,
   });
 
@@ -47,7 +51,9 @@ const Main = () => {
       diaryId: selectedDiaryId,
     });
 
-  const { data: registeredMarker } = useRegisteredMarker({ nickname: "aa" });
+  const { data: registeredMarker } = useRegisteredMarker({
+    nickname: calendarState.nickname,
+  });
 
   useEffect(() => {
     refetch();
@@ -77,6 +83,7 @@ const Main = () => {
   const handleDateClick = (date) => {
     handleToggle();
     setCalendarState({
+      ...calendarState,
       selectedDate: date,
     });
   };
@@ -86,7 +93,9 @@ const Main = () => {
       <div>
         <Header>
           <div>
-            <div style={{ fontWeight: 600 }}>OO라봉의 제주 여행 일기</div>
+            <div style={{ fontWeight: 600 }}>{`${
+              calendarState.nickname ?? "준준"
+            }라봉의 제주 여행 일기`}</div>
 
             <Title>
               <Image src={labong_default} alt={"라봉로고"} />
@@ -137,23 +146,23 @@ const Main = () => {
             );
           })}
 
-          {/* {registeredDiarys?.map((data, index) => {
-            const { latitude, longitude } = data;
+          {registeredDiarys?.map((data, index) => {
+            const { latitude, longitude, size } = data;
+            const { xAnchor, yAnchor } = checkLayoutSize(size);
 
             return (
               <>
                 <CustomOverlayMap
                   position={{ lat: latitude, lng: longitude }}
-                  xAnchor={-0.2}
-                  yAnchor={1.3}
+                  xAnchor={xAnchor}
+                  yAnchor={yAnchor}
                 >
                   <NumberTag>{index + 1}</NumberTag>
                 </CustomOverlayMap>
               </>
             );
-          })} */}
+          })}
         </Map>
-        {/* )} */}
       </div>
       <Button onClick={() => navigate("/map")}>라봉이 심으러 갈라봉?</Button>
 
@@ -177,6 +186,8 @@ const Layout = styled.section`
 `;
 
 const Title = styled.div`
+  display: flex;
+  align-items: center;
   margin-top: 15px;
   font-size: 40px;
   line-height: 36px;
@@ -185,8 +196,8 @@ const Title = styled.div`
 `;
 
 const Image = styled.img`
-  width: 28px;
-  height: 30px;
+  width: 38px;
+  height: 36px;
   margin-right: 10px;
 `;
 

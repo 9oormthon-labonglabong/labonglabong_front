@@ -12,6 +12,9 @@ import {
   Spinner,
 } from "@goorm-dev/gds-goormthon";
 
+import { useRecoilState } from "recoil";
+import { calendarAtom } from "../atoms/calendarAtom";
+
 import { useRegisteredDay } from "../features/calendar/calendar.queries";
 
 const Calendar = ({ onClick }) => {
@@ -19,11 +22,12 @@ const Calendar = ({ onClick }) => {
   const [selectedMonth, setSelectedMonth] = useState(
     format(new Date(), "yyyy-MM")
   );
+  const [calendarState] = useRecoilState(calendarAtom);
   const { cursorDate, navigation, headers, body } = useCalendar();
 
   const { data: RegisteredDays, isFetching } = useRegisteredDay({
     date: selectedMonth,
-    nickname: "aa", // 가변요소 적용 필요
+    nickname: calendarState.nickname, // 가변요소 적용 필요
   });
 
   useEffect(() => {

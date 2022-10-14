@@ -29,14 +29,19 @@ const Diary = () => {
   const [calendarState] = useRecoilState(calendarAtom);
   const [diaryState, setDiaryState] = useRecoilState(diaryAtom);
 
-  // modal visible
+  useEffect(() => {
+    console.log("calendarState", calendarState.nickname);
+  }, [calendarState]);
+
   const { mutateAsync } = useDiaryRegistMutation({
     data: formData,
     options: {
       // 성공 시 지면 이동하고, query reset
       onSuccess: () => {
+        setDiaryState({
+          ...INITIAL_STATE,
+        });
         queryClient.invalidateQueries();
-        console.log("good");
         navigate("/main");
       },
     },
@@ -86,12 +91,9 @@ const Diary = () => {
     customFormData.append("longitude", diaryState.longitude);
     customFormData.append("address", diaryState.address);
     customFormData.append("title", diaryState.title);
-    customFormData.append("nickname", "aa");
+    customFormData.append("nickname", calendarState.nickname);
 
     setFormData(customFormData);
-    setDiaryState({
-      ...INITIAL_STATE,
-    });
   };
 
   return (

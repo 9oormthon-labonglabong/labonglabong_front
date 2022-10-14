@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 export const calendarAtom = atom({
   key: "calendarAtom",
   default: {
+    nickname: "",
     selectedDate: dayjs(new Date()).format("YYYY.MM.DD"),
   },
 });
